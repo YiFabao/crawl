@@ -27,7 +27,7 @@ public class LinkQueue {
 	
 	/**
 	 * 获得URL队列
-	 * @return
+	 * @return URL队列
 	 */
 	public static Queue getUnVisitedUrl(){
 		return unVisitedUrl;
@@ -35,7 +35,7 @@ public class LinkQueue {
 	
 	/**
 	 * 添加到访问过的URL队列中
-	 * @param url
+	 * @param url URL字符串
 	 */
 	public static void addVisitedUrl(String url){
 		visitedUrl.add(url);
@@ -43,7 +43,7 @@ public class LinkQueue {
 	
 	/**
 	 * 移除访问过的URL
-	 * @return
+	 * @param url URL字符串
 	 */
 	public static void removeVisitedUrl(String url)
 	{
@@ -52,7 +52,7 @@ public class LinkQueue {
 	
 	/**
 	 * 未访问的 URL 出列
-	 * @return 
+	 * @return  URL字符串
 	 */
 	public static Object unVisitedUrlDeQueue(){
 		return unVisitedUrl.deQueue();
@@ -62,7 +62,7 @@ public class LinkQueue {
 	 * 添加 URL 到 未访问的 URL 队列中.<br>
 	 * 如果该URL已经访问过了, 或已经在未访问队列中存在, <br>
 	 * 那么就不会保存
-	 * @param url
+	 * @param url URL字符串
 	 */
 	public static void addUnVisitedUrl(String url){
 		if(url !=null && !url.trim().equals("")

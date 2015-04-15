@@ -54,17 +54,10 @@
 		</copy>
 	</target>
 
-	<!-- ================================= 
-          target: resolve              
-         ================================= -->
-
 	<target name="resolve" depends="init" description="--> retreive dependencies with ivy">
 		<ivy:retrieve />
 	</target>
 
-	<!-- ================================= 
-          target: report              
-         ================================= -->
 	<target name="report" depends="resolve" description="--> generates a report of dependencies">
 		<ivy:report todir="${build.dir}"/>
 	</target>
@@ -76,17 +69,13 @@
 		</javac>
 	</target>
 
-	<!-- ================================= 
-          target: clean              
-         ================================= -->
+
 	<target name="clean" description="--> clean the project">
 		<delete dir="${build.dir}"/>
 		<delete dir="${dist.dir}"/>
 	</target>
 
-	<!-- ================================= 
-          target: clean-cache              
-         ================================= -->
+
 	<target name="clean-cache" description="--> clean the ivy cache">
 		<ivy:cleancache />
 	</target>
