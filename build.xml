@@ -16,7 +16,7 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project name="crawl" default="execute" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="crawl" default="test-basic" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<!-- 引用第三方包目录 -->
 	<property name="lib.dir" value="lib" />
 	<!-- 编译目录 -->
@@ -71,12 +71,6 @@
 			<src path="${src.dir}"/>
 			<classpath refid="compile.classpath"/>
 		</javac>
-	</target>
-	<!-- ================================= 
-          target: run
-         ================================= -->
-	<target name="execute" depends="compile" description="--> run the project">
-		<java classpathref="run.classpath" classname="com.yifabao.HelloWorld"/>
 	</target>
 
 	<!-- ================================= 
