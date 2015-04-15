@@ -121,7 +121,7 @@
 	</target>
 
 	<target name="test-basic" depends="test-compile">
-		<junit printsummary="true" haltonfailure="true">
+		<junit printsummary="false" haltonfailure="true" withOutAndErr="true">
 			<classpath refid="test.classpath" />
 			<formatter type="brief" usefile="false"/>
 			<test name="${test.suite}" />
