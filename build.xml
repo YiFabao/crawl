@@ -123,6 +123,7 @@
 	<target name="test-basic" depends="test-compile">
 		<junit printsummary="true" haltonfailure="true">
 			<classpath refid="test.classpath" />
+			<formatter type="brief" usefile="false"/>
 			<test name="${test.suite}" />
 		</junit>
 	</target>
