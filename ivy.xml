@@ -20,5 +20,6 @@
     <info organisation="com.yifabao" module="crawl"/>
     <dependencies>
         <dependency org="junit" name="junit" rev="4.12"/>
+        <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.4.1"/>
     </dependencies>
 </ivy-module>

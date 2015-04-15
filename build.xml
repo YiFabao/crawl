@@ -16,7 +16,7 @@
    specific language governing permissions and limitations
    under the License.    
 -->
-<project name="crawl" default="test-basic" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="crawl" default="test" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<!-- 引用第三方包目录 -->
 	<property name="lib.dir" value="lib" />
 	<!-- 编译目录 -->
@@ -28,6 +28,8 @@
 	<property name = "resources.dir" value = "resources" />
 	<!-- 发布目录 -->
 	<property name = "dist.dir" value = "dist" />
+	<!-- javaDoc 文档目录 -->
+	<property name="javadoc.dir" value = "doc" />
 
 	<!-- paths used for compilation and run  -->
 	<path id="lib.path.id">
@@ -46,6 +48,7 @@
 	<target name="init">
 		<mkdir dir="${build.classes.dir}" />
 		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${javadoc.dir}"/>
 		<copy todir="${build.classes.dir}">
 			<fileset dir="${resources.dir}"/>
 		</copy>
@@ -89,8 +92,6 @@
 	</target>
 
 	<!--==================================test======================================== -->
-	<property name="test.suite" value="com.yifabao.AllJUnitTests" />
-	
 	<property name="test.dir" location="${build.dir}/test" />
 	<property name="test.classes.dir" location="${test.dir}/classes" />
 	<property name="test.data.dir" location="${test.dir}/data" />
@@ -120,12 +121,46 @@
 		</javac>
 	</target>
 
-	<target name="test-basic" depends="test-compile">
-		<junit printsummary="withOutAndErr" haltonfailure="true" >
-			<classpath refid="test.classpath" />
+	<target name="test" depends="test-compile">
+		<junit printsummary="false" errorProperty ="test.failed" failureProperty="test.failed">
+			<classpath>
+				<path refid="test.classpath" />
+				<pathelement path="${java.class.path}" />
+			</classpath>
 			<formatter type="brief" usefile="false" />
-			<test name="${test.suite}" />
+			<formatter type="xml" />
+			<test name="${testcase}" todir="${test.data.dir}" if="testcase"/>
+			<batchtest todir="${test.data.dir}" unless="testcase">
+				<fileset dir="${test.classes.dir}" includes="**/*Test.class" />
+			</batchtest>
 		</junit>
+
+		<junitreport todir="${test.data.dir}">
+			<fileset dir="${test.data.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${test.reports.dir}" />
+		</junitreport>
+
+		<fail if="test.failed">
+		Tests failed. Check ${test.reports.dir}
+		</fail>
+	</target>
+
+	<!--===============================================生成文档=================================================-->
+	<target name="javadocs" depends="compile" description="make the java docs">
+		<javadoc access="private" 
+				sourcepath="src" 
+				destdir="${javadoc.dir}"
+				packagenames="com.*" 
+				use="true" 
+				version="true" 
+				encoding="UTF-8"
+				charset="UTF-8"
+				windowtitle="${ant.project.name}" 
+				failonerror="true">
+			<classpath refid="compile.classpath" />
+		</javadoc>
 	</target>
 
 </project>
