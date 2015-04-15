@@ -1,13 +1,17 @@
 package com.yifabao;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 import junit.framework.TestCase;
 
 public class InputStreamTest extends TestCase{
 	
 	public void testPageUrl() throws IOException{
-/*		String path = "http://www.baidu.com";
+		String path = "http://www.baidu.com";
 		URL pageURL = new URL(path);
 		InputStream stream = pageURL.openStream();
 		
@@ -19,7 +23,7 @@ public class InputStreamTest extends TestCase{
 			sb.append(line+"\n");
 		}
 		stream.close();
-		System.out.println(sb.toString());*/
+		System.out.println(sb.toString());
 		assertEquals("aa", "aac");
 	}
 }
