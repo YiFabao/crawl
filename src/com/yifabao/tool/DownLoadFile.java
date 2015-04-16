@@ -1,10 +1,29 @@
 package com.yifabao.tool;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.routing.HttpRoute;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.params.CoreConnectionPNames;
 
 /**
  * 下载文件
@@ -31,6 +50,11 @@ public class DownLoadFile {
 		}
 	}
 	
+	/**
+	 * 保存网页字节数组到本地文件,filePath 为要保存的文件相对地址
+	 * @param data 字节数组
+	 * @param filePath 保存文件的地址
+	 */
 	private void saveToLocal(byte[] data,String filePath){
 		try {
 			DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(filePath)));
@@ -41,11 +65,46 @@ public class DownLoadFile {
 			out.flush();
 			out.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+	public String downloadFile(String url) throws ClientProtocolException, IOException
+	{
+		String filePath = null;
+
+		//1.连接池
+		PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+		// Increase max total connection to 200
+		cm.setMaxTotal(200);
+		// Increase default max connection per route to 20
+		cm.setDefaultMaxPerRoute(20);
+		
+	
+		// Increase max connections for localhost:80 to 50
+		HttpHost localhost = new HttpHost("locahost", 80);
+		cm.setMaxPerRoute(new HttpRoute(localhost), 50);
+		
+		HttpClientBuilder httpClientBuilder = HttpClients.custom();
+		httpClientBuilder.setRetryHandler(new DefaultHttpRequestRetryHandler(3, true));
+		CloseableHttpClient httpClient = httpClientBuilder.setConnectionManager(cm).build();
+
+		//设置请求超时2秒,传输超时2秒
+		HttpGet httpGet = new HttpGet(url);
+		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(2000).setConnectTimeout(2000).build();//设置请求和传输超时时间
+		httpGet.setConfig(requestConfig);
+		
+		CloseableHttpResponse response = httpClient.execute(httpGet);//执行请求
+		int statusCode = response.getStatusLine().getStatusCode();
+		if(statusCode != HttpStatus.SC_OK){
+			System.err.println("Method failed:"+response.getStatusLine());
+			filePath = null;
+		}
+		
+		return filePath;
+	}
+	
+	
 }
