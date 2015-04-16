@@ -8,15 +8,17 @@ import java.net.URL;
 
 public class URLTest {
 	public static void main(String[] args) throws IOException {
-		String path  = "http://www.baidu.com";
-		URL pageURL = new URL(path);
-		InputStream stream = pageURL.openStream();
-		BufferedReader sb = new BufferedReader(new InputStreamReader(stream));
-		String line =null;
-		while((line=sb.readLine())!=null)
-		{
-			System.out.println(line);
+		if(true){
+			return;
 		}
+
+		System.err.println("2");
+		System.err.println("3");
+		System.err.println("4");
+		System.err.println("5");
+		System.err.println("6");
+		System.err.println("7");
+		System.out.println("2222222222222222222222222");
 	 
 	}
 }

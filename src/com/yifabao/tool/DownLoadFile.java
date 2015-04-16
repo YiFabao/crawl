@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import javax.xml.ws.Response;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
@@ -56,6 +58,7 @@ public class DownLoadFile {
 	 * @param filePath 保存文件的地址
 	 */
 	private void saveToLocal(byte[] data,String filePath){
+		
 		try {
 			DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(filePath)));
 			int i;
@@ -71,7 +74,41 @@ public class DownLoadFile {
 		}
 	}
 	
-	public String downloadFile(String url) throws ClientProtocolException, IOException
+
+	/**
+	 * 保存网页字节流到本地文件,filePath 为要保存的文件相对地址
+	 * @param inputStream　输入流
+	 * @param filePath 本地文件路径
+	 */
+	private void saveToLocal(InputStream inputStream,String filePath){
+		DataOutputStream out=null;
+		try {
+			out = new DataOutputStream(new FileOutputStream(new File(filePath)));
+			byte buffer[] = new byte[1024];
+			while((inputStream.read(buffer))!=-1){
+				out.write(buffer);
+			}
+			out.flush();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 下载url指向的网页
+	 * @param url 指定的url字符串
+	 * @param rootPath　根路径名 windows下　d://xxx/xxx 注意最后面不要/  linux 下 /xxx/
+	 * @return 文件路径
+	 */
+	public String downloadFile(String url,String rootPath)
 	{
 		String filePath = null;
 
@@ -95,16 +132,44 @@ public class DownLoadFile {
 		HttpGet httpGet = new HttpGet(url);
 		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(2000).setConnectTimeout(2000).build();//设置请求和传输超时时间
 		httpGet.setConfig(requestConfig);
-		
-		CloseableHttpResponse response = httpClient.execute(httpGet);//执行请求
-		int statusCode = response.getStatusLine().getStatusCode();
-		if(statusCode != HttpStatus.SC_OK){
-			System.err.println("Method failed:"+response.getStatusLine());
-			filePath = null;
+		CloseableHttpResponse response=null;
+		try {
+			response = httpClient.execute(httpGet);//执行请求
+			int statusCode = response.getStatusLine().getStatusCode();
+			if(statusCode != HttpStatus.SC_OK){
+				System.err.println("Method failed:"+response.getStatusLine());
+				filePath = null;
+			}else{
+				HttpEntity entity = response.getEntity();
+				if(entity != null){
+					InputStream inputStream = entity.getContent();
+					//根据网页url 生成保存时的文件名
+					filePath = rootPath+File.separator+getFileNameByUrl(url, entity.getContentType().getValue());
+					saveToLocal(inputStream, filePath);
+				}else{
+					filePath = null;
+				}
+			
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (UnsupportedOperationException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				//释放连接
+				response.close();
+				httpClient.close();
+				httpGet.releaseConnection();
+				cm.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return filePath;
 	}
-	
 	
 }

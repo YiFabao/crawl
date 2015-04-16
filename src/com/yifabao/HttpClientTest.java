@@ -20,6 +20,7 @@ public class HttpClientTest {
 		CloseableHttpResponse response = httpclient.execute(httpget);
 		try {
 			HttpEntity entity = response.getEntity();
+			System.out.println(entity.getContentType().getName()+"==>"+entity.getContentType().getValue());
 			if (entity != null) {
 				InputStream instream = entity.getContent();
 				try {
@@ -35,6 +36,7 @@ public class HttpClientTest {
 			}
 		} finally {
 			response.close();
+			httpclient.close();
 		}
 
 	}
