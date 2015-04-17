@@ -32,6 +32,8 @@ import org.htmlparser.tags.TableRow;
 import org.htmlparser.tags.TableTag;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 //正文抽取主程序
 public class ExtractContext {
@@ -51,7 +53,7 @@ public class ExtractContext {
 		ExtractContext console = new ExtractContext();
 		ChannelLinkDO c = new ChannelLinkDO();
 		c.setEncode("gb2312");
-		c.setLink("http://www.qiche.com.cn/files/200712/12016.shtml");
+		c.setLink("http://www.tuniu.com/g900/whole-sh-0/list-e487/");
 		c.setLinktext("test");
 		console.makeContext(c);
 	}
